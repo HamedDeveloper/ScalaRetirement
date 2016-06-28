@@ -1,9 +1,9 @@
 /**
   * Created by Hamed on 6/20/2016.
   */
-class RetirementPlan (rRetirementAge: Integer, rRetirementYears: Integer, rAnnualRetirementSalary: Integer) {
+class RetirementPlan (rRetirementAge: Int, rRetirementYears: Int, rAnnualRetirementSalary: Int) {
 
-  val retirementAge: Integer = rRetirementAge
-  val retirementYears: Integer = rRetirementYears
-  val annualRetirementSalary: Integer = rAnnualRetirementSalary
+  val retirementAge: Int = rRetirementAge
+  val retirementYears: Int = rRetirementYears
+  val annualRetirementSalary: Int = rAnnualRetirementSalary
 }

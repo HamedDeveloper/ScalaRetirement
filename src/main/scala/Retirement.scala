@@ -8,7 +8,7 @@ class Retirement (eEconomicCondition: EconomicCondition, rPerson: Person){
 
   def savingsAtRetirement() : Double = {
     val financialInfo: PersonFinancialInfo = person.financialInfo
-    val accumulatedSavingUpToThisYear: Integer = financialInfo.accumulatedSavingUpToThisYear
+    val accumulatedSavingUpToThisYear: Int = financialInfo.accumulatedSavingUpToThisYear
     var annualSaving: Double = financialInfo.thisYearSalarySaving
     var retirementSavings: Double = accumulatedSavingUpToThisYear + annualSaving
 
@@ -32,7 +32,7 @@ class Retirement (eEconomicCondition: EconomicCondition, rPerson: Person){
 
   //TODO consider inflation rate.
   def achievementChance(): Double ={
-    var possibleCases: Integer = 0
+    var possibleCases: Int = 0
     for( a <- 1 to 10000) {
       if (remainingAtEndOfRetirement(savingsAtRetirement()) > 0){
         possibleCases = possibleCases + 1
