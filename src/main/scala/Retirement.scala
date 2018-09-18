@@ -1,7 +1,7 @@
 /**
   * Created by Hamed on 6/20/2016.
   */
-class Retirement (economicCondition: EconomicCondition, person: Person){
+case class Retirement (economicCondition: EconomicCondition, person: Person){
 
   def savingsAtRetirement() : Double = {
     val financialInfo: PersonFinancialInfo = person.financialInfo
