@@ -1,42 +1,49 @@
+import scala.annotation.tailrec
+
 /**
   * Created by Hamed on 6/20/2016.
   */
-case class Retirement (economicCondition: EconomicCondition, person: Person){
+case class Retirement(economicCondition: EconomicCondition, person: Person) {
 
-  def savingsAtRetirement() : Double = {
-    val financialInfo: PersonFinancialInfo = person.financialInfo
-    val accumulatedSavingUpToThisYear: Int = financialInfo.accumulatedSavingUpToThisYear
-    var annualSaving: Double = financialInfo.thisYearSalarySaving
-    var retirementSavings: Double = accumulatedSavingUpToThisYear + annualSaving
+    @tailrec
+    private def savingsAtRetirement(age: Int, accSavings: Double): Double = {
+        if (age == person.age) accSavings
+        else {
+            val financialInfo: PersonFinancialInfo = person.financialInfo
+            val annualSaving = financialInfo.thisYearSalarySaving
 
-    for( a <- 1 to (person.retirementPlan.retirementAge - person.age)){
-      val annualRaiseRate: Double = financialInfo.annualSavingRaise.sample()
-      val appliedRate: Double = 1+annualRaiseRate+economicCondition.interestDist.sample()
-      annualSaving = appliedRate * annualSaving
-      retirementSavings = annualSaving + (retirementSavings * (100+economicCondition.interestDist.sample())/100)
+            val annualRaiseRate = financialInfo.annualSavingRaise.sample()
+            val appliedRate = 1 + annualRaiseRate + economicCondition.interestDist.sample()
+            val totalAnnualSaving = appliedRate * annualSaving + accSavings
+            savingsAtRetirement(
+                age - 1,
+                totalAnnualSaving * (100 + economicCondition.interestDist.sample()) / 100
+            )
+        }
     }
-    retirementSavings
-  }
 
-  def remainingAtEndOfRetirement(savings: Double) = {
-    var retirementSavings: Double = savings
-    for( a <- 1 to person.retirementPlan.retirementYears) {
-      val appliedRate = 1+economicCondition.interestDist.sample()
-      retirementSavings = retirementSavings * appliedRate - person.retirementPlan.annualRetirementSalary
+    @tailrec
+    private def remainingAtEndOfRetirement(savings: Double, numOfYears: Int): Double = {
+        if (numOfYears == 0) savings
+        else {
+            val appliedRate = 1 + economicCondition.interestDist.sample()
+            remainingAtEndOfRetirement(savings * appliedRate - person.retirementPlan.annualRetirementSalary, numOfYears - 1)
+        }
     }
-    retirementSavings
-  }
 
-  //TODO consider inflation rate.
-  def achievementChance(): Double ={
-    var possibleCases: Int = 0
-    for( a <- 1 to 10000) {
-      if (remainingAtEndOfRetirement(savingsAtRetirement()) > 0){
-        possibleCases = possibleCases + 1
-      }
+    //TODO consider inflation rate.
+    @tailrec
+    final def achievementChance(experienceNum: Int, successNum: Int): Double = {
+        if (experienceNum == 10000) successNum * 100 / experienceNum
+        else {
+            if (remainingAtEndOfRetirement(
+                savingsAtRetirement(person.retirementPlan.retirementAge, person.financialInfo.accumulatedSavingUpToThisYear),
+                person.retirementPlan.retirementYears)
+              > 0) {
+                achievementChance(experienceNum + 1, successNum + 1)
+            } else achievementChance(experienceNum+1, successNum)
+        }
     }
-    possibleCases/100
-  }
 
 }
 
