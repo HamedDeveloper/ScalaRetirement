@@ -1,10 +1,7 @@
 /**
   * Created by Hamed on 6/20/2016.
   */
-class Retirement (eEconomicCondition: EconomicCondition, rPerson: Person){
-
-  val economicCondition: EconomicCondition = eEconomicCondition
-  val person: Person = rPerson
+class Retirement (economicCondition: EconomicCondition, person: Person){
 
   def savingsAtRetirement() : Double = {
     val financialInfo: PersonFinancialInfo = person.financialInfo
@@ -13,7 +10,7 @@ class Retirement (eEconomicCondition: EconomicCondition, rPerson: Person){
     var retirementSavings: Double = accumulatedSavingUpToThisYear + annualSaving
 
     for( a <- 1 to (person.retirementPlan.retirementAge - person.age)){
-      val annualRaiseRate: Double = financialInfo.annualSavingRaiseDist.sample();
+      val annualRaiseRate: Double = financialInfo.annualSavingRaise.sample()
       val appliedRate: Double = 1+annualRaiseRate+economicCondition.interestDist.sample()
       annualSaving = appliedRate * annualSaving
       retirementSavings = annualSaving + (retirementSavings * (100+economicCondition.interestDist.sample())/100)
