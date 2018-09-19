@@ -1,8 +1,5 @@
 import scala.annotation.tailrec
 
-/**
-  * Created by Hamed on 6/20/2016.
-  */
 case class Retirement(economicCondition: EconomicCondition, person: Person) {
 
     @tailrec
@@ -41,7 +38,7 @@ case class Retirement(economicCondition: EconomicCondition, person: Person) {
                 person.retirementPlan.retirementYears)
               > 0) {
                 achievementChance(experienceNum + 1, successNum + 1)
-            } else achievementChance(experienceNum+1, successNum)
+            } else achievementChance(experienceNum + 1, successNum)
         }
     }
 
